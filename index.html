@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Secure Vault - Mobile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #165DFF;
+      --success: #16A34A;
+      --accent: #EAB308;
+      --background: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #1F2937;
+      --text-muted: #6B7280;
+      --danger: #DC2626;
+      --border: #E2E8F0;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    .auth-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .auth-card {
+      background: var(--card-bg);
+      padding: 35px 25px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .logo-area {
+      font-size: 2.8rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .auth-card h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .auth-card p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 25px;
+    }
+
+    .auth-footer-note {
+      margin-top: 15px; 
+      font-size: 0.75rem; 
+      color: var(--text-muted);
+    }
+
+    .auth-footer-note i {
+      color: var(--accent);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i.field-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--primary);
+      font-size: 0.95rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      transition: all 0.2s ease;
+      background-color: #FFFFFF;
+    }
+
+    .select-input {
+      padding-left: 42px;
+      appearance: none;
+    }
+
+    .textarea-input {
+      padding-left: 14px; 
+      min-height: 90px; 
+      resize: vertical;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.15);
+    }
+
+    .visibility-toggle {
+      position: absolute;
+      right: 14px;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 8px;
+    }
+
+    .form-row-split {
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary { background-color: var(--primary); color: #FFFFFF; }
+    .btn-primary:hover { filter: brightness(1.1); }
+
+    .btn-danger { background-color: var(--danger); color: #FFFFFF; }
+    .btn-danger:hover { filter: brightness(1.1); }
+
+    .btn-secondary { background-color: var(--border); color: var(--text); }
+    .btn-secondary:hover { filter: brightness(0.95); }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 0.8rem;
+    }
+
+    .btn-icon-only {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: var(--radius-sm);
+    }
+
+    .app-container {
+      display: none; 
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    .brand i { color: var(--primary); }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mobile-filter-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+    .mobile-filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      display: inline-block;
+      padding: 6px 16px;
+      background-color: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-chip.active {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    main {
+      flex: 1;
+      padding: 16px;
+      padding-bottom: 90px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-accent {
+      background-color: rgba(234, 179, 8, 0.15);
+      color: #B45309;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .fab-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background-color: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 10px rgba(22, 93, 255, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      transition: transform 0.2s ease;
+    }
+    .fab-btn:active {
+      transform: scale(0.95);
+    }
+
+    .vault-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .vault-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .card-icon {
+      width: 36px;
+      height: 36px;
+      background-color: rgba(22, 93, 255, 0.08);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .card-meta h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .card-meta span {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .card-body-field {
+      margin-bottom: 8px;
+    }
+    .card-body-field strong {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .field-value-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--background);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      margin-top: 2px;
+    }
+
+    .field-value {
+      font-family: monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+    }
+
+    .card-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 6px;
+      font-size: 0.95rem;
+    }
+    .btn-icon:hover { color: var(--primary); }
+    .btn-icon.delete:hover { color: var(--danger); }
+
+    /* ================= BULLETPROOF MOBILE SCROLL FIX ================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+      padding-top: 40px; /* Forces distance from the top edge */
+    }
+
+    .modal {
+      background-color: var(--card-bg);
+      border-top-left-radius: var(--radius-md);
+      border-top-right-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-height: 100%; /* Uses overlay boundaries rather than vh */
+      min-height: 0; /* CRITICAL: Allows flex container to shrink correctly */
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    }
+
+    /* THE MISSING LINK: The form tag must also pass down flex sizing */
+    .modal form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0; /* Prevents compression */
+    }
+    
+    .modal-header h2 { font-size: 1.1rem; }
+    
+    .modal-close {
+      background: none; border: none;
+      font-size: 1.5rem; color: var(--text-muted);
+      padding: 4px; cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 16px;
+      overflow-y: auto; /* ENABLES SWIPE SCROLLING */
+      -webkit-overflow-scrolling: touch;
+      flex: 1;
+      min-height: 0; /* Allows body to shrink enough to trigger internal scrolling */
+    }
+
+    .modal-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+      background-color: var(--card-bg);
+    }
+
+    .divider {
+      border: 0; border-top: 1px dashed var(--border); margin: 16px 0;
+    }
+
+    .generator-trigger {
+      margin-top: 8px;
+      width: auto;
+    }
+
+    .generator-panel {
+      display: none;
+      background-color: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .generator-panel h4 {
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .generator-panel input[type="range"] {
+      width: 100%;
+      margin: 6px 0 12px 0;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .checkbox-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .category-template { display: none; }
+    .category-template.active { display: block; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state i {
+      font-size: 2.5rem; color: var(--border); margin-bottom: 12px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.95rem; margin-bottom: 8px;
+    }
+    .panel-subtitle.color-danger { color: var(--danger); }
+    .danger-paragraph {
+      font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 95px;
+      left: 16px; right: 16px;
+      background-color: var(--text);
+      color: #FFFFFF;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(150px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 200;
+      font-size: 0.85rem;
+    }
+    .toast.show {
+      transform: translateY(0); opacity: 1;
+    }
+    .toast-success i { color: var(--success); }
+    .toast-error i { color: var(--danger); }
+  </style>
+</head>
+<body>
+
+  <div id="authScreen" class="auth-container">
+    <div class="auth-card">
+      <div class="logo-area">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h1>Secure Vault</h1>
+      <p>Mobile Device Safe Storage</p>
+      
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Master Key Access</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-key field-icon"></i>
+            <input type="password" id="masterKeyInput" class="form-input" placeholder="Enter 6-digit Master Key" required pattern="[0-9]{6}" inputmode="numeric" maxlength="6">
+            <i class="fa-solid fa-eye visibility-toggle" onclick="toggleFieldVisibility('masterKeyInput', this)"></i>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-lock-open"></i> Unlock Vault
+        </button>
+      </form>
+      <div class="auth-footer-note">
+        <i class="fa-solid fa-circle-info"></i> Default initial code: <strong>123456</strong>
+      </div>
+    </div>
+  </div>
+
+  <div id="appScreen" class="app-container">
+    <header>
+      <div class="brand">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Secure Vault</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-icon-only" onclick="openSettingsModal()" title="Settings">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <button class="btn btn-danger btn-icon-only" onclick="handleLock()" title="Lock Vault">
+          <i class="fa-solid fa-lock"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="mobile-filter-bar">
+      <div class="filter-chip active" data-category="all" onclick="switchFilter('all')">All</div>
+      <div class="filter-chip" data-category="credentials" onclick="switchFilter('credentials')">Logins</div>
+      <div class="filter-chip" data-category="cards" onclick="switchFilter('cards')">Cards</div>
+      <div class="filter-chip" data-category="documents" onclick="switchFilter('documents')">Docs</div>
+      <div class="filter-chip" data-category="subscriptions" onclick="switchFilter('subscriptions')">Subs</div>
+      <div class="filter-chip" data-category="notes" onclick="switchFilter('notes')">Notes</div>
+    </div>
+
+    <main>
+      <div class="section-title">
+        <span id="currentCategoryTitle">All Vault Items</span>
+        <span class="badge-accent"><i class="fa-solid fa-mobile-screen"></i> Local</span>
+      </div>
+
+      <div id="vaultGrid" class="vault-grid"></div>
+    </main>
+
+    <button class="fab-btn" onclick="openAddModal()" title="Add New Item">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+
+  <div id="itemModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Vault Entry</h2>
+        <button class="modal-close" onclick="closeModal('itemModal')">&times;</button>
+      </div>
+      <form id="vaultItemForm" onsubmit="handleSaveItem(event)">
+        <div class="modal-body">
+          <input type="hidden" id="editItemId">
+          
+          <div class="form-group">
+            <label>Item Name / Title</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-heading field-icon"></i>
+              <input type="text" id="itemTitle" class="form-input" placeholder="e.g. My Personal Email" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Vault Category</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-tags field-icon"></i>
+              <select id="itemCategorySelect" class="form-input select-input" onchange="handleCategoryTemplateSwitch(this.value)">
+                <option value="credentials">Credentials (Websites &amp; Apps)</option>
+                <option value="cards">Cards (Accounts, PINs, CVV)</option>
+                <option value="documents">Documents (NIN, BVN, Passport)</option>
+                <option value="subscriptions">Services &amp; Subscriptions</option>
+                <option value="notes">Private Notes</option>
+              </select>
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <div class="category-template active" id="bank-template-credentials">
+            <div class="form-group">
+              <label>Website URL / App</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-link field-icon"></i>
+                <input type="text" data-field="url" class="form-input" placeholder="https://example.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Username / Email</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user field-icon"></i>
+                <input type="text" data-field="username" class="form-input" placeholder="user@mail.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock field-icon"></i>
+                <input type="password" id="field-cred-pass" data-field="password" class="form-input" placeholder="••••••••">
+                <i class="fa-solid fa-eye visibility-toggle" onclick="toggleFieldVisibility('field-cred-pass', this)"></i>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm generator-trigger" onclick="toggleGeneratorView()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Password Generator Tool
+              </button>
+            </div>
+
+            <div id="inlinePasswordGenerator" class="generator-panel">
+              <h4>Generate Secure Key</h4>
+              <div class="form-group">
+                <label>Length: <span id="lengthDisplay">16</span></label>
+                <input type="range" id="genLength" min="8" max="32" value="16" oninput="document.getElementById('lengthDisplay').innerText = this.value">
+              </div>
+              <div class="checkbox-group">
+                <label><input type="checkbox" id="genUpper" checked> Include Uppercase (A-Z)</label>
+                <label><input type="checkbox" id="genNumbers" checked> Include Numbers (0-9)</label>
+                <label><input type="checkbox" id="genSymbols" checked> Include Symbols (!@#$)</label>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="executePasswordGeneration('field-cred-pass')">
+                Inject Generated Password
+              </button>
+            </div>
+          </div>
+
+          <div class="category-template" id="bank-template-cards">
+            <div class="form-group">
+              <label>Bank Name</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-building-columns field-icon"></i>
+                <input type="text" data-field="bankName" class="form-input" placeholder="e.g. Zenith Bank">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Account Name</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user field-icon"></i>
+                <input type="text" data-field="accountName" class="form-input" placeholder="John Doe">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Account Number</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-hashtag field-icon"></i>
+                <input type="text" data-field="accountNumber" class="form-input" inputmode="numeric" placeholder="0123456789">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Card Number</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-credit-card field-icon"></i>
+                <input type="password" id="field-card-num" data-field="cardNumber" class="form-input" inputmode="numeric" placeholder="1234 5678 9012 3456">
+                <i class="fa-solid fa-eye visibility-toggle" onclick="toggleFieldVisibility('field-card-num', this)"></i>
+              </div>
+            </div>
+            <div class="form-row-split">
+              <div class="form-group">
+                <label>Expiry Date</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-calendar field-icon"></i>
+                  <input type="text" data-field="expiry" class="form-input" placeholder="MM/YY">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>CVV / Secure PIN</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-key field-icon"></i>
+                  <input type="password" id="field-card-cvv" data-field="cvv" class="form-input" inputmode="numeric" placeholder="***">
+                  <i class="fa-solid fa-eye visibility-toggle" onclick="toggleFieldVisibility('field-card-cvv', this)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="category-template" id="bank-template-documents">
+            <div class="form-group">
+              <label>Document Type / Name</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-passport field-icon"></i>
+                <input type="text" data-field="docType" class="form-input" placeholder="e.g. NIN, BVN, Passport">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Identification Number</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-id-card field-icon"></i>
+                <input type="text" data-field="docNumber" class="form-input" placeholder="Enter ID Number string">
+              </div>
+            </div>
+          </div>
+
+          <div class="category-template" id="bank-template-subscriptions">
+            <div class="form-group">
+              <label>Service Provider</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-network-wired field-icon"></i>
+                <input type="text" data-field="provider" class="form-input" placeholder="e.g. WiFi Network, Netflix">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Subscription Fee / Plan</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-money-bill-wave field-icon"></i>
+                <input type="text" data-field="plan" class="form-input" placeholder="e.g. $15 / month">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Renewal Timeline / Due Date</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-clock field-icon"></i>
+                <input type="text" data-field="renewalDate" class="form-input" placeholder="Next billing date">
+              </div>
+            </div>
+          </div>
+
+          <div class="category-template" id="bank-template-notes">
+            <div class="form-group">
+              <label>Secure Recovery Phrase / Secrets</label>
+              <textarea data-field="noteContent" class="form-input textarea-input" placeholder="Paste private text logs..."></textarea>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('itemModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Vault Management Settings</h2>
+        <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3 class="panel-subtitle"><i class="fa-solid fa-key"></i> Change Master Key</h3>
+        <form id="changeKeyForm" onsubmit="handleChangeMasterKey(event)">
+          <div class="form-group">
+            <label>New 6-Digit Master Key</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock field-icon"></i>
+              <input type="password" id="newMasterKey" class="form-input" required pattern="[0-9]{6}" inputmode="numeric" maxlength="6" placeholder="Enter exactly 6 digits">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm" style="width: auto;"><i class="fa-solid fa-check"></i> Save Key</button>
+        </form>
+
+        <hr class="divider" style="margin: 25px 0;">
+        
+        <h3 class="panel-subtitle color-danger"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</h3>
+        <p class="danger-paragraph">Wipes the entire vault array database storage immediately from this device browser context. This cannot be reverted.</p>
+        <button onclick="factoryResetVault()" class="btn btn-danger btn-sm" style="width: auto;"><i class="fa-solid fa-trash-can"></i> Purge All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    let vaultItems = [];
+    let activeFilter = 'all';
+    let sessionUnlocked = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('secure_vault_master')) {
+        localStorage.setItem('secure_vault_master', '123456');
+      }
+      
+      const savedData = localStorage.getItem('secure_vault_data');
+      if (savedData) {
+        try {
+          vaultItems = JSON.parse(savedData);
+        } catch(e) {
+          vaultItems = [];
+        }
+      }
+    });
+
+    function toggleFieldVisibility(id, iconElement) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        iconElement.className = 'fa-solid fa-eye-slash visibility-toggle';
+      } else {
+        input.type = 'password';
+        iconElement.className = 'fa-solid fa-eye visibility-toggle';
+      }
+    }
+
+    function toggleGeneratorView() {
+      const panel = document.getElementById('inlinePasswordGenerator');
+      panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function executePasswordGeneration(targetInputId) {
+      const length = parseInt(document.getElementById('genLength').value) || 16;
+      const useUpper = document.getElementById('genUpper').checked;
+      const useNumbers = document.getElementById('genNumbers').checked;
+      const useSymbols = document.getElementById('genSymbols').checked;
+
+      let charset = "abcdefghijklmnopqrstuvwxyz";
+      if (useUpper) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      if (useNumbers) charset += "0123456789";
+      if (useSymbols) charset += "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+      let generatedPassword = "";
+      const randomArray = new Uint32Array(length);
+      window.crypto.getRandomValues(randomArray);
+
+      for (let i = 0; i < length; i++) {
+        generatedPassword += charset.charAt(randomArray[i] % charset.length);
+      }
+
+      const targetInput = document.getElementById(targetInputId);
+      if (targetInput) {
+        targetInput.value = generatedPassword;
+        targetInput.type = 'text'; 
+        showToast('Secure random key injected.');
+        document.getElementById('inlinePasswordGenerator').style.display = 'none';
+      }
+    }
+
+    function handleCategoryTemplateSwitch(category) {
+      document.querySelectorAll('.category-template').forEach(element => {
+        element.classList.remove('active');
+      });
+      const activeTemplate = document.getElementById(`bank-template-${category}`);
+      if (activeTemplate) {
+        activeTemplate.classList.add('active');
+      }
+      document.getElementById('inlinePasswordGenerator').style.display = 'none';
+    }
+
+    function openAddModal() {
+      document.getElementById('vaultItemForm').reset();
+      document.getElementById('editItemId').value = '';
+      document.getElementById('modalTitle').textContent = 'Add Vault Entry';
+      document.getElementById('itemCategorySelect').disabled = false;
+      handleCategoryTemplateSwitch('credentials');
+      document.getElementById('itemModal').style.display = 'flex';
+    }
+
+    function openSettingsModal() {
+      document.getElementById('changeKeyForm').reset();
+      document.getElementById('settingsModal').style.display = 'flex';
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) closeModal(this.id);
+      });
+    });
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.className = `toast toast-${type} show`;
+      toast.innerHTML = type === 'success' 
+        ? `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`
+        : `<i class="fa-solid fa-circle-xmark"></i> <span>${message}</span>`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const inputKey = document.getElementById('masterKeyInput').value;
+      const systemKey = localStorage.getItem('secure_vault_master');
+
+      if (inputKey === systemKey) {
+        sessionUnlocked = true;
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('appScreen').style.display = 'flex';
+        document.getElementById('masterKeyInput').value = '';
+        showToast('Vault lock released.');
+        renderVaultGrid();
+      } else {
+        showToast('Access Denied. Invalid Master Key.', 'error');
+      }
+    }
+
+    function handleLock() {
+      sessionUnlocked = false;
+      document.getElementById('appScreen').style.display = 'none';
+      document.getElementById('authScreen').style.display = 'flex';
+      showToast('Vault secured.');
+    }
+
+    function handleChangeMasterKey(e) {
+      e.preventDefault();
+      const newKey = document.getElementById('newMasterKey').value;
+      if (newKey.length === 6 && /^\d+$/.test(newKey)) {
+        localStorage.setItem('secure_vault_master', newKey);
+        closeModal('settingsModal');
+        showToast('Master Key modified.');
+      } else {
+        showToast('Validation failed. Requires 6 digits.', 'error');
+      }
+    }
+
+    function handleSaveItem(e) {
+      e.preventDefault();
+      
+      const itemId = document.getElementById('editItemId').value;
+      const title = document.getElementById('itemTitle').value;
+      const category = document.getElementById('itemCategorySelect').value;
+      
+      const templateContainer = document.getElementById(`bank-template-${category}`);
+      const dynamicFields = {};
+      
+      templateContainer.querySelectorAll('[data-field]').forEach(input => {
+        dynamicFields[input.getAttribute('data-field')] = input.value;
+      });
+
+      if (itemId) {
+        const targetIndex = vaultItems.findIndex(i => i.id === itemId);
+        if (targetIndex !== -1) {
+          vaultItems[targetIndex] = { id: itemId, title, category, fields: dynamicFields };
+          showToast('Vault item modified.');
+        }
+      } else {
+        const newItem = {
+          id: 'vault_' + Date.now(),
+          title,
+          category,
+          fields: dynamicFields
+        };
+        vaultItems.push(newItem);
+        showToast('Record committed successfully.');
+      }
+
+      localStorage.setItem('secure_vault_data', JSON.stringify(vaultItems));
+      closeModal('itemModal');
+      renderVaultGrid();
+    }
+
+    function deleteItem(itemId) {
+      if (confirm('Are you certain you want to destroy this record permanently?')) {
+        vaultItems = vaultItems.filter(item => item.id !== itemId);
+        localStorage.setItem('secure_vault_data', JSON.stringify(vaultItems));
+        showToast('Record discarded safely.', 'success');
+        renderVaultGrid();
+      }
+    }
+
+    function editItem(itemId) {
+      const item = vaultItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      document.getElementById('editItemId').value = item.id;
+      document.getElementById('itemTitle').value = item.title;
+      document.getElementById('itemCategorySelect').value = item.category;
+      document.getElementById('itemCategorySelect').disabled = true; 
+      
+      handleCategoryTemplateSwitch(item.category);
+      
+      setTimeout(() => {
+        const templateContainer = document.getElementById(`bank-template-${item.category}`);
+        templateContainer.querySelectorAll('[data-field]').forEach(input => {
+          const fieldKey = input.getAttribute('data-field');
+          if (item.fields && item.fields[fieldKey] !== undefined) {
+            input.value = item.fields[fieldKey];
+          }
+        });
+      }, 50);
+
+      document.getElementById('modalTitle').textContent = 'Modify Vault Entry';
+      document.getElementById('itemModal').style.display = 'flex';
+    }
+
+    function copyValueToClipboard(value, label) {
+      navigator.clipboard.writeText(value).then(() => {
+        showToast(`${label || 'Value'} copied to clipboard.`);
+      }).catch(() => {
+        showToast('Clipboard access declined.', 'error');
+      });
+    }
+
+    function switchFilter(categoryName) {
+      activeFilter = categoryName;
+      document.querySelectorAll('.mobile-filter-bar .filter-chip').forEach(chip => {
+        chip.classList.remove('active');
+        if (chip.getAttribute('data-category') === categoryName) {
+          chip.classList.add('active');
+        }
+      });
+      
+      const titleMap = {
+        'all': 'All Vault Items',
+        'credentials': 'Credentials Logins',
+        'cards': 'Cards & Bank Accounts',
+        'documents': 'Official Documents Logs',
+        'subscriptions': 'Services Subscriptions',
+        'notes': 'Private Text Notes Logs'
+      };
+      document.getElementById('currentCategoryTitle').textContent = titleMap[categoryName] || 'Safe View';
+      renderVaultGrid();
+    }
+
+    function factoryResetVault() {
+      if (confirm('CRITICAL ACTION: This operation purges your device database cache logs permanently. Continue?')) {
+        localStorage.removeItem('secure_vault_data');
+        localStorage.removeItem('secure_vault_master');
+        vaultItems = [];
+        showToast('Vault dropped completely.', 'error');
+        setTimeout(() => window.location.reload(), 1200);
+      }
+    }
+
+    function renderVaultGrid() {
+      const grid = document.getElementById('vaultGrid');
+      grid.innerHTML = '';
+
+      const itemsFiltered = activeFilter === 'all' 
+        ? vaultItems 
+        : vaultItems.filter(item => item.category === activeFilter);
+
+      if (itemsFiltered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-folder-open"></i>
+            <p>No item records saved inside this category.</p>
+          </div>`;
+        return;
+      }
+
+      const categoryIcons = {
+        credentials: 'fa-globe',
+        cards: 'fa-credit-card',
+        documents: 'fa-id-card',
+        subscriptions: 'fa-receipt',
+        notes: 'fa-note-sticky'
+      };
+
+      itemsFiltered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'vault-card';
+
+        let fieldsHtml = '';
+        if (item.fields) {
+          for (const [key, val] of Object.entries(item.fields)) {
+            if (!val) continue; 
+            
+            const cleanLabel = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+            const isSecret = ['password', 'cvv', 'cardNumber'].includes(key);
+            const displayVal = isSecret ? '••••••••' : val;
+
+            fieldsHtml += `
+              <div class="card-body-field">
+                <strong>${cleanLabel}</strong>
+                <div class="field-value-container">
+                  <span class="field-value">${displayVal}</span>
+                  <div style="display: flex; gap: 8px;">
+                    ${isSecret ? `<button type="button" class="btn-icon" title="Reveal confidential values" onclick="alert('${cleanLabel}: ${val.replace(/'/g, "\\'")}')"><i class="fa-solid fa-eye"></i></button>` : ''}
+                    <button type="button" class="btn-icon" title="Copy text string" onclick="copyValueToClipboard('${val.replace(/'/g, "\\'")}', '${cleanLabel}')">
+                      <i class="fa-solid fa-copy"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>`;
+          }
+        }
+
+        card.innerHTML = `
+          <div>
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fa-solid ${categoryIcons[item.category] || 'fa-shield'}"></i>
+              </div>
+              <div class="card-meta">
+                <h3>${item.title}</h3>
+                <span>${item.category}</span>
+              </div>
+            </div>
+            <div class="card-body-container">${fieldsHtml}</div>
+          </div>
+          <div class="card-actions">
+            <button type="button" class="btn-icon" title="Edit Parameters Data" onclick="editItem('${item.id}')">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" class="btn-icon delete" title="Destroy record" onclick="deleteItem('${item.id}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
